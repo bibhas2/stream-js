@@ -206,9 +206,3 @@ class LimitStream extends Stream {
     }
 }
 
-const s = Stream.of([1, 2, 33, 4, 5])
-console.log("Large:", Stream.of([1, 2, 33, 4, 5]).findFirst(x => x > 10))
-console.log("Small:", Stream.of([1, 2, 33, 4, 5]).findFirst(x => x < 0))
-    // .skip(1)
-    // .limit(3)
-    // .forEach(x => console.log(x))

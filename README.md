@@ -1,7 +1,7 @@
 # Stream.js
-JavaScript Array has filter(), map() etc. methods. But they each create a new array. This adds unnecessary overhead. This stream library attempts to fix that problem. It has constant memory complexity. Meaning, processing a large stream adds no extra memory overhead.
+JavaScript Array has filter(), map() etc. methods. But they each create a new array. This adds unnecessary overhead. This stream library attempts to fix that problem. It has constant memory complexity. Meaning, processing a large array as a stream adds no extra memory overhead.
 
-The API inspired by Java's Stream support.
+The API is inspired by Java's Stream support.
 
 Basic example:
 
@@ -108,6 +108,8 @@ WORLD
 
 ## Skipping Values
 
+Use ``skip()`` to suppress first few values from reaching downstream.
+
 ```javascript
 const s = Stream.of([1, 2, 3, 4, 5])
 s.skip(2)
@@ -173,7 +175,7 @@ Excludes 40: true
 To search for a value in the stream use ``findFirst()``. It will return ``undefined`` if no value matching the criteria is found.
 
 ```javascript
-console.log("Large:", Stream.of([1, 2, 33, 4, 5]).findFirst(x => x > 10))
+console.log("Large:", Stream.of([1, 2, 33, 40, 5]).findFirst(x => x > 10))
 console.log("Small:", Stream.of([1, 2, 33, 4, 5]).findFirst(x => x < 0))
 ```
 
@@ -182,4 +184,22 @@ Prints:
 ```
 Large: 33
 Small: undefined
+```
+
+## Get an Array from a Stream
+Use ``collect()`` to convert a stream into an array.
+
+```javascript
+const s = Stream.of([1, 2, 3, 4, 5])
+const a = s.skip(1)
+    .limit(3)
+    .collect()
+
+console.log(a)
+```
+
+This will print:
+
+```
+[ 2, 3, 4 ]
 ```
