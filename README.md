@@ -1,7 +1,10 @@
 # Stream.js
 JavaScript Array has filter(), map() etc. methods. But they each create a new array. This adds unnecessary overhead. This stream library attempts to fix that problem. It has constant memory complexity. Meaning, processing a large array as a stream adds no extra memory overhead.
 
-The API is inspired by Java's Stream support.
+In addition to memory usage, there are plenty of other benefits to this stream library.
+
+1. Adds support for skipping and limiting values.
+2. Adds mapping, filtering, reduction etc. to any iterator object.
 
 Basic example:
 
@@ -29,6 +32,31 @@ const s = Stream.of([1, 2, 3, 4, 5])
 ```
 
 Note: You can not store ``undefined`` in the array. An ``undefined`` value will end the stream.
+
+## Creating a Stream from an Iterator
+Many JavaScript API support [the iterator protocol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators). You can create a stream from them. 
+
+The following sums up the values in a ``Map`` that are larger than 150.
+
+```javascript
+let m = new Map
+
+m.set("a", 100)
+m.set("b", 200)
+m.set("c", 300)
+
+let s = Stream.of(m.values())
+    .filter(x => x > 150)
+    .reduce((sum, x) => sum + x)
+
+console.log(s)
+```
+
+That will print:
+
+```
+500
+```
 
 ## Iterate Through a Stream
 ```javascript

@@ -11,8 +11,12 @@ class Stream {
         return undefined
     }
 
-    static of(list) {
-        return new ArrayStream(list, undefined)
+    static of(source) {
+        if (Array.isArray(source)) {
+            return new ArrayStream(source, undefined)
+        } else {
+            return new IteratorStream(source, undefined)
+        }
     }
 
     forEach(consumer) {
@@ -146,6 +150,34 @@ class ArrayStream extends Stream {
     }
 }
 
+class IteratorStream extends Stream {
+    iterator = undefined
+
+    constructor(source) {
+        super(source)
+
+        this.iterator = source[Symbol.iterator]()
+
+        if (this.iterator === undefined) {
+            throw Error("Stream source does not support iteration.")
+        }
+    }
+
+    next() {
+        if (this.upstream === undefined || this.iterator === undefined) {
+            return undefined
+        }
+
+        const result = this.iterator.next()
+
+        if (result.done === true) {
+            return undefined
+        }
+
+        return result.value
+    }
+}
+
 class MapStream extends Stream {
     next() {
         if (this.upstream === undefined || this.processor === undefined) {
@@ -237,11 +269,14 @@ class LimitStream extends Stream {
     }
 }
 
-let s = Stream.of(["Earth", "Mars", "Jupiter", "Mars"])
-    .reduce((theSet, x) => {
-        theSet.add(x)
+let m = new Map
 
-        return theSet
-    }, new Set)
+m.set("a", 100)
+m.set("b", 200)
+m.set("c", 300)
+
+let s = Stream.of(m.values())
+    .filter(x => x > 150)
+    .reduce((sum, x) => sum + x)
 
 console.log(s)
