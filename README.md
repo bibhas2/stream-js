@@ -203,3 +203,39 @@ This will print:
 ```
 [ 2, 3, 4 ]
 ```
+
+## Reducing a Stream
+The ``reduce()`` method works the same way as JavaScript array reduce. The following code adds 1 to each value and then finds the maximum.
+
+```javascript
+let max = Stream.of([1, 2, 33, 4, 5])
+    .map(x => x + 1)
+    .reduce((lastMax, x) => lastMax > x ? lastMax : x)
+    
+console.log(max)
+```
+
+This will print:
+
+```
+34
+```
+
+Optionally, you can supply an initial reduced value. The following will de-duplicate an array of names.
+
+```javascript
+let s = Stream.of(["Earth", "Mars", "Jupiter", "Mars"])
+    .reduce((theSet, x) => {
+        theSet.add(x)
+
+        return theSet
+    }, new Set)
+
+console.log(s)
+```
+
+This will print:
+
+```
+{ 'Earth', 'Mars', 'Jupiter' }
+```

@@ -93,7 +93,38 @@ class Stream {
         }
 
         return undefined
-    }    
+    } 
+    
+    reduce(reducerFunc, reducedValue) {
+        while (true) {
+            const currentValue = this.next()
+
+            if (currentValue === undefined) {
+                //End of stream.
+                return reducedValue
+            }
+            /*
+            reducedValue can only be undefined in the first
+            iteration. In that case we pick the second value from the stream.
+            */
+            reducedValue = reducedValue === undefined ? 
+                this.next() : reducedValue
+    
+            if (reducedValue === undefined) {
+                //This should only happen if stream 
+                //has only one value
+                return currentValue
+            }
+    
+            reducedValue = reducerFunc(reducedValue, currentValue)  
+            
+            //Reducer should not return undefined. 
+            //If it does do so we gracefully end processing
+            if (reducedValue === undefined) {
+                return undefined
+            }
+        }
+    }
 }
 
 class ArrayStream extends Stream {
@@ -206,3 +237,11 @@ class LimitStream extends Stream {
     }
 }
 
+let s = Stream.of(["Earth", "Mars", "Jupiter", "Mars"])
+    .reduce((theSet, x) => {
+        theSet.add(x)
+
+        return theSet
+    }, new Set)
+
+console.log(s)
