@@ -47,6 +47,10 @@ class Stream {
         return new TakeWhileStream(this, pred);
     }
 
+    skipWhile(pred) {
+        return new SkipWhileStream(this, pred);
+    }
+
     peek(peekProc) {
         return new PeekStream(this, peekProc);
     }
@@ -339,6 +343,36 @@ class TakeWhileStream extends Stream {
     }
 }
 
+class SkipWhileStream extends Stream {
+    started = false
+
+    next() {
+        if (this.upstream === undefined || this.processor === undefined) {
+            return undefined
+        }
+
+        while (!this.started) {
+            let elem = this.upstream.next()
+
+            if (elem === undefined) {
+                return undefined
+            }
+
+            const matches = this.processor(elem)
+
+            if (matches) {
+                //Keep skipping
+            } else {
+                this.started = true
+
+                return elem
+            }
+        }
+
+        return this.upstream.next()
+    }
+}
+
 class SkipStream extends Stream {
     skipCount = 0
 
@@ -373,7 +407,3 @@ class LimitStream extends Stream {
         return undefined
     }
 }
-
-Stream.of([1, 2, 3, -4, 5])
-    .takeWhile(x => x >= 0)
-    .forEach(x => console.log(x))

@@ -195,6 +195,25 @@ This will print:
 4
 ```
 
+## Skip While
+The ``skipWhile()`` method will keep suppressing values from reaching downstream until a condition is met.
+
+The following will keep skipping values until a negative value is found.
+
+```javascript
+Stream.of([1, 2, -3, 4, 5])
+    .skipWhile(x => x >= 0)
+    .forEach(x => console.log(x))
+```
+
+This will print:
+
+```
+-3
+4
+5
+```
+
 ## Take While
 The ``takeWhile()`` method makes it possible to terminate a stream early. The following will keep processing the stream until a negative number is reached.
 
