@@ -1,7 +1,7 @@
 # Stream.js
 JavaScript Array has filter(), map() etc. methods. But they each create a new array. This adds unnecessary overhead. This stream library attempts to fix that problem. It has constant memory complexity. Meaning, processing a large array as a stream adds no extra memory overhead.
 
-In addition to memory usage, there are plenty of other benefits to this stream library.
+In addition to lower memory usage, there are plenty of other benefits to this stream library.
 
 1. Adds support for skipping, limiting and zipping that are otherwise missing in an array.
 2. Adds mapping, filtering, reduction etc. to any iterator object.
@@ -94,7 +94,29 @@ WONDERFUL
 WORLD
 ```
 
+## Flat Mapping
+This is similar to map but the mapper function must return another stream. A certain class of problems can only be solved using flat mapping.
+
+The following example starts with a stream of sentences. The flat mapper breaks each sentence into a stream of words. The ``forEach()`` prints out one word at a time.
+
+```javascript
+Stream.of(["I have", "a dream"])
+    .flatMap(s => Stream.of(s.split(" ")))
+    .forEach(word => console.log(word))
+```
+
+This will print:
+
+```
+I
+have
+a
+dream
+```
+
 ## Filtering Values
+The following example adds 1 to each number and then filters out the odd numbers.
+
 ```javascript
 Stream.of([1, 2, 3, 4, 5])
     .map(x => x + 1)
@@ -171,6 +193,23 @@ This will print:
 2
 3
 4
+```
+
+## Take While
+The ``takeWhile()`` method makes it possible to terminate a stream early. The following will keep processing the stream until a negative number is reached.
+
+```javascript
+Stream.of([1, 2, 3, -4, 5])
+    .takeWhile(x => x >= 0)
+    .forEach(x => console.log(x))
+```
+
+This will print:
+
+```
+1
+2
+3
 ```
 
 ## Searching

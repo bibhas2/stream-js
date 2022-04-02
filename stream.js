@@ -35,8 +35,16 @@ class Stream {
         return new MapStream(this, mapper);
     }
 
+    flatMap(mapper) {
+        return new FlatMapStream(this, mapper);
+    }
+
     filter(filterProc) {
         return new FilterStream(this, filterProc);
+    }
+
+    takeWhile(pred) {
+        return new TakeWhileStream(this, pred);
     }
 
     peek(peekProc) {
@@ -228,6 +236,41 @@ class MapStream extends Stream {
     }
 }
 
+class FlatMapStream extends Stream {
+    currentStream = undefined
+
+    next() {
+        if (this.upstream === undefined || this.processor === undefined) {
+            return undefined
+        }
+
+        if (this.currentStream !== undefined) {
+            const elem = this.currentStream.next()
+
+            if (elem !== undefined) {
+                return elem
+            }
+        }
+        
+        const elem = this.upstream.next()
+
+        if (elem === undefined) {
+            //End this stream
+            this.currentStream = undefined
+
+            return undefined
+        }
+
+        this.currentStream = this.processor(elem)
+
+        if (this.currentStream === undefined) {
+            return undefined
+        }
+        
+        return this.next()
+    }
+}
+
 class PeekStream extends Stream {
     next() {
         if (this.upstream === undefined || this.processor === undefined) {
@@ -266,6 +309,36 @@ class FilterStream extends Stream {
     }
 }
 
+class TakeWhileStream extends Stream {
+    done = false
+
+    next() {
+        if (this.upstream === undefined || this.processor === undefined) {
+            return undefined
+        }
+
+        if (this.done) {
+            return undefined
+        }
+
+        let elem = this.upstream.next()
+
+        if (elem === undefined) {
+            return undefined
+        }
+
+        const matches = this.processor(elem)
+
+        if (matches) {
+            return elem
+        } else {
+            this.done = true
+
+            return undefined
+        }
+    }
+}
+
 class SkipStream extends Stream {
     skipCount = 0
 
@@ -301,9 +374,6 @@ class LimitStream extends Stream {
     }
 }
 
-let s1 = Stream.of([1, 2, 3, 4, 5])
-let s2 = Stream.of(["One", "Two", "Three"])
-
-Stream.zip([s1, s2])
-    .skip(1)
-    .forEach(values => console.log(values))
+Stream.of([1, 2, 3, -4, 5])
+    .takeWhile(x => x >= 0)
+    .forEach(x => console.log(x))
