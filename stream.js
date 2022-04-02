@@ -19,6 +19,10 @@ class Stream {
         }
     }
 
+    static zip(sourceList) {
+        return new ZipStream(sourceList)
+    }
+
     forEach(consumer) {
         let elem = undefined
 
@@ -178,6 +182,34 @@ class IteratorStream extends Stream {
     }
 }
 
+class ZipStream extends Stream {
+    constructor(source) {
+        super(source)
+
+        if (!Array.isArray(this.upstream)) {
+            throw Error("Zipping requires an array of Stream objects.")
+        }
+    }
+
+    next() {
+        if (this.upstream === undefined || this.upstream.length == 0) {
+            return undefined
+        }
+
+        const result = Stream.of(this.upstream)
+            .map(s => s.next())
+            .collect()
+
+        if (result.length < this.upstream.length) {
+            //One of the streams ended early
+
+            return undefined
+        }
+
+        return result
+    }
+}
+
 class MapStream extends Stream {
     next() {
         if (this.upstream === undefined || this.processor === undefined) {
@@ -269,14 +301,9 @@ class LimitStream extends Stream {
     }
 }
 
-let m = new Map
+let s1 = Stream.of([1, 2, 3, 4, 5])
+let s2 = Stream.of(["One", "Two", "Three"])
 
-m.set("a", 100)
-m.set("b", 200)
-m.set("c", 300)
-
-let s = Stream.of(m.values())
-    .filter(x => x > 150)
-    .reduce((sum, x) => sum + x)
-
-console.log(s)
+Stream.zip([s1, s2])
+    .skip(1)
+    .forEach(values => console.log(values))

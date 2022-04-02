@@ -3,7 +3,7 @@ JavaScript Array has filter(), map() etc. methods. But they each create a new ar
 
 In addition to memory usage, there are plenty of other benefits to this stream library.
 
-1. Adds support for skipping and limiting values.
+1. Adds support for skipping, limiting and zipping that are otherwise missing in an array.
 2. Adds mapping, filtering, reduction etc. to any iterator object.
 
 Basic example:
@@ -59,6 +59,8 @@ That will print:
 ```
 
 ## Iterate Through a Stream
+Use the ``forEach()`` method of a stream to receive all the values.
+
 ```javascript
 const s = Stream.of([1, 2, 3, 4, 5])
 
@@ -266,4 +268,25 @@ This will print:
 
 ```
 { 'Earth', 'Mars', 'Jupiter' }
+```
+
+## Zipping Streams
+To combine multiple streams use the ``zip()`` method.
+
+The following example skips one value from each stream and then prints the rest.
+
+```javascript
+let s1 = Stream.of([1, 2, 3, 4, 5])
+let s2 = Stream.of(["One", "Two", "Three"])
+
+Stream.zip([s1, s2])
+    .skip(1)
+    .forEach(values => console.log(values))
+```
+
+This will print the following. Notice how the numbers 4 and 5 are ignored due to the dissimilar lengths of the streams.
+
+```
+[ 2, 'Two' ]
+[ 3, 'Three' ]
 ```
