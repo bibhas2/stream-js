@@ -1,4 +1,4 @@
-import {Stream} from '../stream.js'
+import {Stream} from '../src/stream.js'
 
 describe("A suite is just a function", function() {
   
