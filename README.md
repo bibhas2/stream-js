@@ -348,3 +348,17 @@ This will print the following. Notice how the numbers 4 and 5 are ignored due to
 [ 2, 'Two' ]
 [ 3, 'Three' ]
 ```
+
+## Counting Items in a Stream
+
+```javascript
+const s = Stream.of([1, -2, 52])
+
+console.log(s.count())
+```
+
+This will print:
+
+```
+3
+```

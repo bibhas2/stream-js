@@ -1,4 +1,4 @@
-class Stream {
+export class Stream {
     upstream = undefined
     processor = undefined
 
@@ -144,6 +144,14 @@ class Stream {
                 return undefined
             }
         }
+    }
+
+    count() {
+        let counter = 0
+
+        this.forEach(_ => counter += 1)
+
+        return counter
     }
 }
 
