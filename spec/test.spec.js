@@ -123,10 +123,246 @@ describe("Stream testing.", function() {
       expect(s.collect()).toEqual([]);
     })
 
+    it("Tests filtering", function() {
+      const s = Stream
+        .of([1, 2, 3, 4, 5, 6])
+        .filter(x => x % 2 == 0)
+        .filter(x => x <= 4)
+
+      expect(s.collect()).toEqual([2, 4]);
+    })
+
+    it("Tests filtering no match", function() {
+      const s = Stream
+        .of([1, 2, 3, 4, 5, 6])
+        .filter(x => x < 0)
+        .filter(x => x % 2 == 0)
+
+      expect(s.collect()).toEqual([]);
+    })
+
+    it("Tests takeWhile", function() {
+      const s = Stream
+        .of([1, 2, 3, 4, 5, 6])
+        .takeWhile(x =>x < 4)
+
+      expect(s.collect()).toEqual([1, 2, 3]);
+    })
+
+    it("Tests skipWhile", function() {
+      const s = Stream
+        .of([1, 2, 3, 4, 5, 6])
+        .skipWhile(x =>x < 4)
+
+      expect(s.collect()).toEqual([4, 5, 6]);
+    })
+
+    it("Tests skip", function() {
+      const s = Stream
+        .of([1, 2, 3, 4, 5, 6])
+        .skip(3)
+
+      expect(s.collect()).toEqual([4, 5, 6]);
+    })
+
+    it("Tests skip too much", function() {
+      const s = Stream
+        .of([1, 2, 3, 4, 5, 6])
+        .skip(30)
+
+      expect(s.collect()).toEqual([]);
+    })
+
+    it("Tests limit", function() {
+      const s = Stream
+        .of([1, 2, 3, 4, 5, 6])
+        .limit(3)
+
+      expect(s.collect()).toEqual([1, 2, 3]);
+    })
+
+    it("Tests limit extremes", function() {
+      const s1 = Stream
+        .of([1, 2, 3, 4, 5, 6])
+        .limit(30)
+
+      expect(s1.collect()).toEqual([1, 2, 3, 4, 5, 6]);
+
+      const s2 = Stream
+        .of([1, 2, 3, 4, 5, 6])
+        .limit(0)
+
+      expect(s2.collect()).toEqual([]);
+    })
+
+    it("Tests anyMatch", function() {
+      const s1 = Stream
+        .of([1, 2, 3, 4, 5, 6])
+
+      expect(s1.anyMatch(x => x == 3)).toBeTrue()
+
+      const s2 = Stream
+        .of([1, 2, 3, 4, 5, 6])
+
+      expect(s2.anyMatch(x => x == 30)).toBeFalse()
+    })
+
+    it("Tests empty anyMatch", function() {
+      const s = Stream.of([])
+
+      expect(s.anyMatch(x => x == 3)).toBeFalse()
+    })
+
+    it("Tests noneMatch", function() {
+      const s1 = Stream
+        .of([1, 2, 3, 4, 5, 6])
+
+      expect(s1.noneMatch(x => x == 30)).toBeTrue()
+
+      const s2 = Stream
+        .of([1, 2, 3, 4, 5, 6])
+
+      expect(s2.noneMatch(x => x == 3)).toBeFalse()
+    })
+
+    it("Tests empty noneMatch", function() {
+      const s = Stream.of([])
+
+      expect(s.noneMatch(x => x == 3)).toBeTrue()
+    })
+
+    it("Tests findFirst", function() {
+      const s1 = Stream.of([1, 2, 3, 4])
+
+      expect(s1.findFirst(x => x == 3)).toBe(3)
+
+      const s2 = Stream.of([1, 2, 3, 4])
+
+      expect(s2.findFirst(x => x == 30)).toBeUndefined()
+
+      const s3 = Stream.of([])
+
+      expect(s3.findFirst(x => x == 30)).toBeUndefined()
+    })
+
+    it("Tests reduce", function() {
+      const argList = []
+      const v = Stream
+        .of([1, 2, 3, 4])
+        .reduce((reduced, x) => {
+          const result = x + reduced
+          argList.push([reduced, x, result])
+
+          return result
+        })
+
+        expect(argList).toEqual([
+          [2, 1, 3],
+          [3, 3, 6],
+          [6, 4, 10]
+        ])
+
+        expect(v).toBe(10)
+    })
+
+    it("Tests reduce with initial value", function() {
+      const argList = []
+      const v = Stream
+        .of([1, 2, 3, 4])
+        .reduce((reduced, x) => {
+          const result = x + reduced
+          argList.push([reduced, x, result])
+
+          return result
+        }, -1)
+
+        expect(argList).toEqual([
+          [-1, 1, 0],
+          [0, 2, 2],
+          [2, 3, 5],
+          [5, 4, 9],
+        ])
+
+        expect(v).toBe(9)
+    })
+
+    it("Tests reduce with one value", function() {
+      const argList = []
+      const v = Stream
+        .of([1])
+        .reduce((reduced, x) => {
+          const result = x + reduced
+          argList.push([reduced, x, result])
+
+          return result
+        })
+
+        expect(argList).toEqual([])
+
+        expect(v).toBe(1)
+    })
+
+    it("Tests reduce with one value and initial value", function() {
+      const argList = []
+      const v = Stream
+        .of([1])
+        .reduce((reduced, x) => {
+          const result = x + reduced
+          argList.push([reduced, x, result])
+
+          return result
+        }, -1)
+
+        expect(argList).toEqual([
+          [-1, 1, 0]
+        ])
+
+        expect(v).toBe(0)
+    })
+
+    it("Tests reduce with empty stream", function() {
+      const argList = []
+      const v = Stream
+        .of([])
+        .reduce((reduced, x) => {
+          const result = x + reduced
+          argList.push([reduced, x, result])
+
+          return result
+        })
+
+        expect(argList).toEqual([])
+
+        expect(v).toBeUndefined()
+    })
+
+    it("Tests reduce with empty stream and initial value", function() {
+      const argList = []
+      const v = Stream
+        .of([])
+        .reduce((reduced, x) => {
+          const result = x + reduced
+          argList.push([reduced, x, result])
+
+          return result
+        }, -1)
+
+        expect(argList).toEqual([])
+
+        expect(v).toBe(-1)
+    })
+
     it("Tests count", function() {
       const s = Stream.of([1, 2, 3])
   
       expect(s.count()).toBe(3);
+
+      const c = Stream
+        .of([1, 2, 3, 4, 5])
+        .filter(x => x % 2 == 0)
+        .count()
+
+      expect(c).toBe(2);
     })
 
     it("Tests count of empty stream", function() {

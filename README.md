@@ -351,14 +351,19 @@ This will print the following. Notice how the numbers 4 and 5 are ignored due to
 
 ## Counting Items in a Stream
 
-```javascript
-const s = Stream.of([1, -2, 52])
+The following will count the number of even values in the stream.
 
-console.log(s.count())
+```javascript
+const c = Stream
+    .of([1, 2, 3, 4, 5])
+    .filter(x => x % 2 == 0)
+    .count()
+
+console.log(c)
 ```
 
 This will print:
 
 ```
-3
+2
 ```
