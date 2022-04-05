@@ -1,4 +1,4 @@
-# Quick Stream JS Library
+# The Quick Stream JS Library
 JavaScript Array has filter(), map() etc. methods. But they each create a new array. This adds unnecessary overhead. This stream library attempts to fix that problem. It has constant memory complexity. Meaning, processing a large array as a stream adds no extra memory overhead.
 
 In addition to lower memory usage, there are plenty of other benefits to this stream library.
@@ -25,8 +25,8 @@ This will print:
 10
 ```
 
-## Using Quick Stream
-### Using npm
+# Using Quick Stream
+## Using npm
 Install the package.
 
 ```
@@ -42,7 +42,7 @@ Stream.of([1, 2, 3])
     .forEach(x => console.log(x))
 ```
 
-### In a Web Page
+## In a Web Page
 Just copy the ``src/stream.js`` file somewhere in your web site or web application. Then import it using the ``<script>`` tag.
 
 ```html
@@ -53,6 +53,8 @@ Just copy the ``src/stream.js`` file somewhere in your web site or web applicati
         .forEach(x => console.log(x))
 </script>
 ```
+
+# API Documentation
 
 ## Creating a Stream from an Array
 
