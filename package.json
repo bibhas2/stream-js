@@ -1,14 +1,18 @@
 {
-  "name": "stream-tests",
+  "name": "quick-stream",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/stream.js",
   "type": "module",
   "scripts": {
     "test": "jasmine"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bibhas2/stream-js"
+  },
+  "author": "Bibhas Bhattacharya",
+  "license": "MIT",
   "devDependencies": {
     "jasmine": "^4.0.2"
   }
