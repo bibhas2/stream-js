@@ -1,5 +1,5 @@
 {
-  "name": "quick-stream",
+  "name": "@mobiarch/quick-stream",
   "version": "1.0.0",
   "description": "",
   "main": "src/stream.js",
